@@ -2,24 +2,33 @@
 .terraform/
 
 # Terraform state files
-terraform.tfstate
-terraform.tfstate.backup
+*.tfstate
+*.tfstate.backup
 
 # Crash log files
 crash.log
 
-# Ignore override files as they are usually used to override resources for local testing
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-
-# Terraform variable files (if you don't want to share them)
+# Exclude Terraform variable overrides
 *.tfvars
-*.tfvars.json
 
-# Sensitive data files (example)
-secrets.auto.tfvars
+# Sensitive or generated SSH keys
+terra-key
+terra-key.pub
 
-# CLI configuration files
-.terraform.lock.hcl
+# Ignore lock file (optional - keep if collaboration is needed)
+# Uncomment if you don't want it tracked:
+# .terraform.lock.hcl
+
+# Ignore auto-generated or temp files
+*.backup
+*.log
+*.tmp
+*.swp
+
+# Ignore VSCode or JetBrains IDE folders (if applicable)
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
