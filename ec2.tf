@@ -1,13 +1,9 @@
-resource "aws_key" "ec2_key" {
+resource "aws_key_pair" "ec2_key" {
   key_name   = "my_ec2_key"
-  public_key = file("terra-key.pub")
-
+  public_key = file("terra-key.pub")  
 }
 
-resource "aws_default_vpc" "default" {
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-}
+resource "aws_default_vpc" "default" {}
 
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_security_group"
@@ -21,10 +17,39 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP traffic"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "automated_ec2_sg"
+  }
+}
+
+# Launch an EC2 instance
+resource "aws_instance" "ec2_instance" {
+  ami                    = "ami-0f918f7e67a3323f0" 
+  instance_type          = "t2.micro"
+  key_name               = aws_key_pair.ec2_key.key_name
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+
+  root_block_device {
+    volume_size = 10
+    volume_type = "gp3"
+  }
+
+  tags = {
+    Name = "automated_ec2_instance"
   }
 }
